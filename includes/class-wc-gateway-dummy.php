@@ -33,7 +33,8 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 			'subscriptions',
 			'subscription_cancellation',
 			'subscription_suspension',
-			'subscription_reactivation'
+			'subscription_reactivation',
+			'multiple_subscriptions'
 		);
 
 		$this->method_title       = _x( 'Dummy Payment', 'Dummy payment method', 'woocommerce-gateway-dummy' );
