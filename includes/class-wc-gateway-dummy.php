@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Dummy Gateway.
  *
  * @class    WC_Gateway_Dummy
- * @version  1.0.0
+ * @version  1.0.1
  */
 class WC_Gateway_Dummy extends WC_Payment_Gateway {
 
@@ -34,6 +34,8 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 			'subscription_cancellation',
 			'subscription_suspension',
 			'subscription_reactivation',
+			'subscription_amount_changes',
+            'subscription_date_changes',
 			'multiple_subscriptions'
 		);
 
