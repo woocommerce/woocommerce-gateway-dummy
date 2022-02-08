@@ -25,7 +25,6 @@ module.exports = function( grunt ) {
 		},
 
 		dist: {
-			js:     'assets/js',
 			dist:   'assets/dist',
 		},
 
@@ -55,10 +54,8 @@ module.exports = function( grunt ) {
 				}
 			},
 			all: [
-				'<%= dist.js %>/admin/*.js',
-				'!Gruntfile.js',
-				'!<%= dist.js %>/admin/select2.js',
-				'!<%= dist.js %>/admin/*.min.js'
+				'<%= dist.dist %>/frontend/*.js',
+				'!Gruntfile.js'
 			]
 		},
 
@@ -66,18 +63,6 @@ module.exports = function( grunt ) {
 		uglify: {
 			options: {
 				preserveComments: false
-			},
-			admin: {
-				files: [ {
-					expand: true,
-					cwd: '<%= dist.js %>/admin',
-					src: [
-						'*.js',
-						'!*.min.js'
-					],
-					dest: '<%= dist.js %>/admin',
-					ext: '.min.js'
-				} ]
 			},
 			dist: {
 				files: [ {
@@ -98,7 +83,7 @@ module.exports = function( grunt ) {
 		watch: {
 			js: {
 				files: [
-					'<%= source.js %>/admin/*js', '!<%= source.js %>/admin/*.min.js'
+					'<%= source.js %>/frontend/*js', '!<%= source.js %>/frontend/*.min.js'
 				],
 				tasks: [ 'copy:resources', 'uglify' ]
 			}
@@ -107,7 +92,7 @@ module.exports = function( grunt ) {
 		// Check textdomain errors.
 		checktextdomain: {
 			options:{
-				text_domain: [ 'woocommerce-gateway-dummy', 'woocommerce' ],
+				text_domain: [ 'woocommerce-gateway-dummy', 'woocommerce', 'woo-gutenberg-products-block' ],
 				keywords: [
 					'__:1,2d',
 					'_e:1,2d',
@@ -224,8 +209,8 @@ module.exports = function( grunt ) {
 				files: [
 					{
 						expand: true,
-						src: [ '<%= source.js %>/frontend/blocks/*.js' ],
-						dest: '<%= dist.js %>/frontend/blocks',
+						src: [ '<%= source.js %>/frontend/*.js' ],
+						dest: '<%= dist.dist %>/frontend',
 						flatten: true,
 						filter: 'isFile'
 					}
