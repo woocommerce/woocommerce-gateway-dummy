@@ -1,0 +1,44 @@
+{
+	"name": "woocommerce-gateway-dummy",
+	"title": "WooCommerce Dummy Payments",
+	"version": "1.2.0",
+	"author": "WooCommerce",
+	"license": "GPL-3.0+",
+	"keywords": [],
+	"engines": {
+		"node": ">=6.9.4",
+		"npm": ">=1.1.0"
+	},
+	"main": "Gruntfile.js",
+	"dependencies": {
+		"@somewherewarm/selectsw": "1.1.7",
+		"@somewherewarm/woocommerce": "^1.0.2"
+	},
+	"devDependencies": {
+		"@woocommerce/dependency-extraction-webpack-plugin": "^1.7.0",
+		"@wordpress/scripts": "17.1.0",
+		"autoprefixer": "9.5.0",
+		"cross-env": "6.0.3",
+		"grunt": "^1.4.1",
+		"grunt-checktextdomain": "1.0.1",
+		"grunt-contrib-copy": "^1.0.0",
+		"grunt-contrib-jshint": "2.1.0",
+		"grunt-contrib-uglify": "4.0.1",
+		"grunt-contrib-watch": "1.1.0",
+		"grunt-exec": "~3.0.0",
+		"grunt-wp-i18n": "1.0.3",
+		"node-sass": "^4.13.1",
+		"request": "~2.88.0"
+	},
+	"scripts": {
+		"start": "wp-scripts start",
+		"build": "wp-scripts build ",
+		"i18n": "npm run i18n:check && npm run i18n:build",
+		"i18n:check": "grunt checktextdomain",
+		"i18n:build": "npm run i18n:pot && ./bin/build_i18n.sh",
+		"i18n:pot": "php -d xdebug.max_nesting_level=512 $(which wp) i18n make-pot --exclude=\"node_modules/,languages/,assets/\" --headers='{\"Report-Msgid-Bugs-To\":\"https://woocommerce.com/my-account/create-a-ticket/\", \"language-team\":\"LANGUAGE <EMAIL@ADDRESS>\"}' . languages/woocommerce-gateway-dummy.pot",
+		"i18n:json": "$(which wp) i18n make-json languages --no-purge",
+		"check-engines": "wp-scripts check-engines",
+		"lint:pkg-json": "wp-scripts lint-pkg-json"
+	}
+}
