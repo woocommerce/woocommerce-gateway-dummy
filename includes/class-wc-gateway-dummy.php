@@ -24,6 +24,7 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 	 * Constructor for the gateway.
 	 */
 	public function __construct() {
+		
 		$this->id                 = 'dummy';
 		$this->icon               = apply_filters( 'woocommerce_dummy_gateway_icon', '' );
 		$this->has_fields         = false;
@@ -53,12 +54,8 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 		// Actions.
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
 		add_action( 'woocommerce_scheduled_subscription_payment_dummy', array( $this, 'process_subscription_payment' ), 10, 2 );
-		add_filter( 'pre_update_option_woocommerce_dummy_settings', [ $this, 'gateway_dummy_update' ], 10, 2 );
 	}
 
-	public function gateway_dummy_update($settings, $old_settings) {
-		return $settings;
-	}
 	/**
 	 * Initialise Gateway Settings Form Fields.
 	 */
