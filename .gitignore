@@ -1,0 +1,45 @@
+# Editors
+project.xml
+project.properties
+/nbproject/private/
+.buildpath
+.project
+.settings*
+sftp-config.json
+.idea
+._*
+
+# Grunt
+/node_modules/
+/deploy/
+package-lock.json
+
+# Composer
+/vendor/
+composer.lock
+
+# Sass
+.sass-cache/
+
+# OS X metadata
+.DS_Store
+
+# Windows junk
+Thumbs.db
+
+# ApiGen
+/wc-apidocs/
+
+# Tests (Unit and E2E)
+/tmp
+/tests/coverage/
+/tests/_output/*
+!/tests/_output/.gitkeep
+
+# Logs
+/logs
+
+# Build assets.
+select2.scss
+/assets/
+/languages/
