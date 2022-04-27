@@ -1,2 +1,3 @@
 # WooCommerce Dummy Payments Gateway
-A Dummy Payments gateway for your WooCommerce website.
+
+A dummy payment gateway for your WooCommerce development needs, with built-in support for subscriptions.
