@@ -35,7 +35,7 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 			'subscription_suspension',
 			'subscription_reactivation',
 			'subscription_amount_changes',
-            'subscription_date_changes',
+			'subscription_date_changes',
 			'multiple_subscriptions'
 		);
 
