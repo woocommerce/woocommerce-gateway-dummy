@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Dummy Gateway.
  *
  * @class    WC_Gateway_Dummy
- * @version  1.0.1
+ * @version  1.0.3
  */
 class WC_Gateway_Dummy extends WC_Payment_Gateway {
 
@@ -81,6 +81,17 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 				'description' => __( 'Payment method description that the customer will see on your checkout.', 'woocommerce-gateway-dummy' ),
 				'default'     => __( 'The goods are yours. No money needed.', 'woocommerce-gateway-dummy' ),
 				'desc_tip'    => true,
+			),
+			'result' => array(
+				'title'    => __( 'Payment result', 'woocommerce-gateway-dummy' ),
+				'desc'     => __( 'Determine if order payments are successful when using this gateway.', 'woocommerce-gateway-dummy' ),
+				'id'       => 'woo_dummy_payment_result',
+				'type'     => 'select',
+				'options'  => array(
+					'success'  => __( 'Success', 'woocommerce-gateway-dummy' ),
+					'failure'  => __( 'Failure', 'woocommerce-gateway-dummy' ),
+				),
+				'desc_tip' => true,
 			)
 		);
 	}
@@ -93,18 +104,25 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 	 */
 	public function process_payment( $order_id ) {
 
-		$order = wc_get_order( $order_id );
+		$payment_result = $this->get_option( 'result' );
 
-		$order->payment_complete();
+		if ( 'success' === $payment_result ) {
+			$order = wc_get_order( $order_id );
 
-		// Remove cart
-		WC()->cart->empty_cart();
+			$order->payment_complete();
 
-		// Return thankyou redirect
-		return array(
-			'result' 	=> 'success',
-			'redirect'	=> $this->get_return_url( $order )
-		);
+			// Remove cart
+			WC()->cart->empty_cart();
+
+			// Return thankyou redirect
+			return array(
+				'result' 	=> 'success',
+				'redirect'	=> $this->get_return_url( $order )
+			);
+		} else {
+			$message = __( 'Order payment failed. To make a successful payment using Dummy Payments, please review the gateway settings.' );
+			throw new Exception( $message );
+		}
 	}
 
 	/**
@@ -115,7 +133,13 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 	 * @return void
 	 */
 	public function process_subscription_payment( $amount, $order ) {
+		$payment_result = $this->get_option( 'result' );
 
-		$order->payment_complete();
+		if ( 'success' === $payment_result ) {
+			$order->payment_complete();
+		} else {
+			$message = __( 'Order payment failed. To make a successful payment using Dummy Payments, please review the gateway settings.' );
+			throw new Exception( $message );
+		}
 	}
 }
