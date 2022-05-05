@@ -4,9 +4,17 @@ use Automattic\WooCommerce\Blocks\Payments\Integrations\AbstractPaymentMethodTyp
 /**
  * Dummy Payments Blocks integration
  *
- * @since 1.0.2
+ * @since 1.0.3
  */
 final class WC_Gateway_Dummy_Blocks_Support extends AbstractPaymentMethodType {
+
+	/**
+	 * The gateway instance.
+	 *
+	 * @var WC_Gateway_Dummy
+	 */
+	private $gateway;
+
 	/**
 	 * Payment method name/id/slug.
 	 *
@@ -19,6 +27,7 @@ final class WC_Gateway_Dummy_Blocks_Support extends AbstractPaymentMethodType {
 	 */
 	public function initialize() {
 		$this->settings = get_option( 'woocommerce_dummy_settings', [] );
+		$this->gateway  = new WC_Gateway_Dummy();
 	}
 
 	/**
@@ -27,7 +36,7 @@ final class WC_Gateway_Dummy_Blocks_Support extends AbstractPaymentMethodType {
 	 * @return boolean
 	 */
 	public function is_active() {
-		return filter_var( $this->get_setting( 'enabled', false ), FILTER_VALIDATE_BOOLEAN );
+		return $this->gateway->is_available();
 	}
 
 	/**
@@ -68,15 +77,10 @@ final class WC_Gateway_Dummy_Blocks_Support extends AbstractPaymentMethodType {
 	 * @return array
 	 */
 	public function get_payment_method_data() {
-
-		require_once WC_Dummy_Payments::plugin_abspath() . '/includes/class-wc-gateway-dummy.php';
-
-		$gateway = new WC_Gateway_Dummy();
-
 		return [
 			'title'       => $this->get_setting( 'title' ),
 			'description' => $this->get_setting( 'description' ),
-			'supports'    => array_filter( $gateway->supports, [ $gateway, 'supports' ] )
+			'supports'    => array_filter( $this->gateway->supports, [ $this->gateway, 'supports' ] )
 		];
 	}
 }
