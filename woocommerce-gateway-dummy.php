@@ -3,7 +3,7 @@
  * Plugin Name: WooCommerce Dummy Payments Gateway
  * Plugin URI: https://somewherewarm.com/
  * Description: Adds the Dummy Payments gateway to your WooCommerce website.
- * Version: 1.0.2
+ * Version: 1.0.3
  *
  * Author: SomewhereWarm
  * Author URI: https://somewherewarm.com/
@@ -96,19 +96,8 @@ class WC_Dummy_Payments {
 			add_action(
 				'woocommerce_blocks_payment_method_type_registration',
 				function( Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry $payment_method_registry ) {
-					$container = Automattic\WooCommerce\Blocks\Package::container();
-					// registers as shared instance.
-					$container->register(
-						WC_Gateway_Dummy_Blocks_Support::class,
-						function() {
-							return new WC_Gateway_Dummy_Blocks_Support();
-						}
-					);
-					$payment_method_registry->register(
-						$container->get( WC_Gateway_Dummy_Blocks_Support::class )
-					);
-				},
-				5
+					$payment_method_registry->register( new WC_Gateway_Dummy_Blocks_Support );
+				}
 			);
 		}
 	}
