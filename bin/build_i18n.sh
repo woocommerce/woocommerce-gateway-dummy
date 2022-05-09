@@ -19,7 +19,7 @@ for T in `find languages -name "*.pot"`
 	do
 		echo -e "\n${GREY}${UNDERLINE_START}Fixing references for: ${T}${UNDERLINE_STOP}${NC}"
 		sed \
-			-e 's/ resources\/js\/frontend\/blocks\/[^:]*:/ assets\/dist\/frontend\/blocks.js:/gp' \
+			-e 's/ resources\/js\/frontend\/[^:]*:/ assets\/frontend\/blocks.js:/gp' \
 			$T | uniq > $T-build
 
 		rm $T
