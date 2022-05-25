@@ -12,7 +12,7 @@
 	"devDependencies": {
 		"@woocommerce/dependency-extraction-webpack-plugin": "^1.7.0",
 		"@wordpress/scripts": "17.1.0",
-		"cross-env": "6.0.3",
+		"cross-env": "6.0.3"
 	},
 	"scripts": {
 		"start": "wp-scripts start",
@@ -21,6 +21,6 @@
 		"i18n:build": "npm run i18n:pot && ./bin/build_i18n.sh",
 		"i18n:pot": "php -d xdebug.max_nesting_level=512 $(which wp) i18n make-pot --exclude=\"node_modules/,languages/,assets/\" --headers='{\"Report-Msgid-Bugs-To\":\"https://woocommerce.com/my-account/create-a-ticket/\", \"language-team\":\"LANGUAGE <EMAIL@ADDRESS>\"}' . languages/woocommerce-gateway-dummy.pot",
 		"i18n:json": "$(which wp) i18n make-json languages --no-purge",
-		"check-engines": "wp-scripts check-engines",
+		"check-engines": "wp-scripts check-engines"
 	}
 }
