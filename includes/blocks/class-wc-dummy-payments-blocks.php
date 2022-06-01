@@ -45,8 +45,7 @@ final class WC_Gateway_Dummy_Blocks_Support extends AbstractPaymentMethodType {
 	 * @return array
 	 */
 	public function get_payment_method_script_handles() {
-		$suffix            = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-		$script_path       = '/assets/js/frontend/blocks' . $suffix . '.js';
+		$script_path       = '/assets/js/frontend/blocks.js';
 		$script_asset_path = WC_Dummy_Payments::plugin_abspath() . 'assets/js/frontend/blocks.asset.php';
 		$script_asset      = file_exists( $script_asset_path )
 			? require( $script_asset_path )
