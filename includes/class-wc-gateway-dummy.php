@@ -87,6 +87,7 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 				'desc'     => __( 'Determine if order payments are successful when using this gateway.', 'woocommerce-gateway-dummy' ),
 				'id'       => 'woo_dummy_payment_result',
 				'type'     => 'select',
+				'default'  => 'success',
 				'options'  => array(
 					'success'  => __( 'Success', 'woocommerce-gateway-dummy' ),
 					'failure'  => __( 'Failure', 'woocommerce-gateway-dummy' ),
