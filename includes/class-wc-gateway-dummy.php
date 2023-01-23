@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Dummy Gateway.
  *
  * @class    WC_Gateway_Dummy
- * @version  1.0.3
+ * @version  1.0.5
  */
 class WC_Gateway_Dummy extends WC_Payment_Gateway {
 
@@ -91,6 +91,7 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 					'success'  => __( 'Success', 'woocommerce-gateway-dummy' ),
 					'failure'  => __( 'Failure', 'woocommerce-gateway-dummy' ),
 				),
+				'default' => 'success',
 				'desc_tip' => true,
 			)
 		);

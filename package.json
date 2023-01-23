@@ -1,7 +1,7 @@
 {
 	"name": "woocommerce-gateway-dummy",
 	"title": "WooCommerce Dummy Payments",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"author": "WooCommerce",
 	"license": "GPL-3.0+",
 	"keywords": [],
