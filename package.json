@@ -1,7 +1,7 @@
 {
 	"name": "woocommerce-gateway-dummy",
 	"title": "WooCommerce Dummy Payments",
-	"version": "1.0.5",
+	"version": "1.0.6",
 	"author": "WooCommerce",
 	"license": "GPL-3.0+",
 	"keywords": [],
@@ -10,9 +10,9 @@
 		"npm": ">=1.1.0"
 	},
 	"devDependencies": {
-		"@woocommerce/dependency-extraction-webpack-plugin": "^1.7.0",
-		"@wordpress/scripts": "17.1.0",
-		"cross-env": "6.0.3"
+		"@woocommerce/dependency-extraction-webpack-plugin": "^2.2.0",
+		"@wordpress/scripts": "^26.10.0",
+		"cross-env": "7.0.3"
 	},
 	"scripts": {
 		"start": "wp-scripts start",
