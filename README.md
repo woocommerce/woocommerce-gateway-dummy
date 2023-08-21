@@ -8,6 +8,6 @@ To build this project, run:
 
 ```
 npm install
-npm run update-packages
+npm run packages-update
 npm run build
 ```
