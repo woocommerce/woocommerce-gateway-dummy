@@ -53,7 +53,11 @@ class WC_Dummy_Payments {
 	 * @param array
 	 */
 	public static function add_gateway( $gateways ) {
-		$gateways[] = 'WC_Gateway_Dummy';
+		$options                  = get_option( 'woocommerce_dummy_settings', array() );
+		$hide_for_non_admin_users = $options['hide_for_non_admin_users'];
+		if ( ( 'yes' === $hide_for_non_admin_users && current_user_can( 'manage_options' ) ) || 'no' === $hide_for_non_admin_users ) {
+			$gateways[] = 'WC_Gateway_Dummy';
+		}
 		return $gateways;
 	}
 
