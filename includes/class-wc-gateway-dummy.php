@@ -47,9 +47,10 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 		$this->init_settings();
 
 		// Define user set variables.
-		$this->title        = $this->get_option( 'title' );
-		$this->description  = $this->get_option( 'description' );
-		$this->instructions = $this->get_option( 'instructions', $this->description );
+		$this->title                    = $this->get_option( 'title' );
+		$this->description              = $this->get_option( 'description' );
+		$this->instructions             = $this->get_option( 'instructions', $this->description );
+		$this->hide_for_non_admin_users = $this->get_option( 'hide_for_non_admin_users' );
 
 		// Actions.
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
@@ -66,7 +67,12 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 				'title'   => __( 'Enable/Disable', 'woocommerce-gateway-dummy' ),
 				'type'    => 'checkbox',
 				'label'   => __( 'Enable Dummy Payments', 'woocommerce-gateway-dummy' ),
-				'default' => 'yes'
+				'default' => 'yes',
+			),
+			'hide_for_non_admin_users' => array(
+				'type'    => 'checkbox',
+				'label'   => __( 'Hide at checkout for non-admin users', 'woocommerce-gateway-dummy' ),
+				'default' => 'no',
 			),
 			'title' => array(
 				'title'       => __( 'Title', 'woocommerce-gateway-dummy' ),

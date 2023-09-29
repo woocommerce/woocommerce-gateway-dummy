@@ -53,7 +53,18 @@ class WC_Dummy_Payments {
 	 * @param array
 	 */
 	public static function add_gateway( $gateways ) {
-		$gateways[] = 'WC_Gateway_Dummy';
+
+		$options = get_option( 'woocommerce_dummy_settings', array() );
+
+		if ( isset( $options['hide_for_non_admin_users'] ) ) {
+			$hide_for_non_admin_users = $options['hide_for_non_admin_users'];
+		} else {
+			$hide_for_non_admin_users = 'no';
+		}
+
+		if ( ( 'yes' === $hide_for_non_admin_users && current_user_can( 'manage_options' ) ) || 'no' === $hide_for_non_admin_users ) {
+			$gateways[] = 'WC_Gateway_Dummy';
+		}
 		return $gateways;
 	}
 
@@ -96,7 +107,7 @@ class WC_Dummy_Payments {
 			add_action(
 				'woocommerce_blocks_payment_method_type_registration',
 				function( Automattic\WooCommerce\Blocks\Payments\PaymentMethodRegistry $payment_method_registry ) {
-					$payment_method_registry->register( new WC_Gateway_Dummy_Blocks_Support );
+					$payment_method_registry->register( new WC_Gateway_Dummy_Blocks_Support() );
 				}
 			);
 		}
