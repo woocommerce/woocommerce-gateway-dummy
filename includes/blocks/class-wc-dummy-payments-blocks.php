@@ -27,7 +27,8 @@ final class WC_Gateway_Dummy_Blocks_Support extends AbstractPaymentMethodType {
 	 */
 	public function initialize() {
 		$this->settings = get_option( 'woocommerce_dummy_settings', [] );
-		$this->gateway  = new WC_Gateway_Dummy();
+		$gateways = WC()->payment_gateways->get_available_payment_gateways();
+		$this->gateway  = $gateways['dummy'];
 	}
 
 	/**
