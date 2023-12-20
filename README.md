@@ -7,6 +7,7 @@ A dummy payment gateway for your WooCommerce development needs, with built-in su
 To build this project, run: 
 
 ```
+nvm use
 npm install
 npm run packages-update
 npm run build
