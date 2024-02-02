@@ -16,9 +16,23 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Dummy Gateway.
  *
  * @class    WC_Gateway_Dummy
- * @version  1.0.5
+ * @version  1.0.7
  */
 class WC_Gateway_Dummy extends WC_Payment_Gateway {
+
+	/**
+	 * Payment gateway instructions.
+	 * @var string
+	 *
+	 */
+	protected $instructions;
+
+	/**
+	 * Whether the gateway is visible for non-admin users.
+	 * @var boolean
+	 *
+	 */
+	protected $hide_for_non_admin_users;
 
 	/**
 	 * Constructor for the gateway.
