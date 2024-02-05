@@ -35,11 +35,17 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 	protected $hide_for_non_admin_users;
 
 	/**
+	 * Unique id for the gateway.
+	 * @var string
+	 *
+	 */
+	public $id = 'dummy';
+
+	/**
 	 * Constructor for the gateway.
 	 */
 	public function __construct() {
 		
-		$this->id                 = 'dummy';
 		$this->icon               = apply_filters( 'woocommerce_dummy_gateway_icon', '' );
 		$this->has_fields         = false;
 		$this->supports           = array(
