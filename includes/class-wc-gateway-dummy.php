@@ -49,6 +49,7 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 		$this->icon               = apply_filters( 'woocommerce_dummy_gateway_icon', '' );
 		$this->has_fields         = false;
 		$this->supports           = array(
+			'pre-orders',
 			'products',
 			'subscriptions',
 			'subscription_cancellation',
