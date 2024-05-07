@@ -166,8 +166,7 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 		if ( 'success' === $payment_result ) {
 			$order->payment_complete();
 		} else {
-			$message = __( 'Order payment failed. To make a successful payment using Dummy Payments, please review the gateway settings.', 'woocommerce-gateway-dummy' );
-			throw new Exception( $message );
+			$order->update_status( 'failed', __( 'Subscription payment failed. To make a successful payment using Dummy Payments, please review the gateway settings.', 'woocommerce-gateway-dummy' ) );
 		}
 	}
 }
