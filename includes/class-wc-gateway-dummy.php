@@ -133,10 +133,9 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 	public function process_payment( $order_id ) {
 
 		$payment_result = $this->get_option( 'result' );
+		$order = wc_get_order( $order_id );
 
 		if ( 'success' === $payment_result ) {
-			$order = wc_get_order( $order_id );
-
 			$order->payment_complete();
 
 			// Remove cart
@@ -148,8 +147,7 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 				'redirect'	=> $this->get_return_url( $order )
 			);
 		} else {
-			$message = __( 'Order payment failed. To make a successful payment using Dummy Payments, please review the gateway settings.', 'woocommerce-gateway-dummy' );
-			throw new Exception( $message );
+			$order->update_status( 'failed', __( 'Subscription payment failed. To make a successful payment using Dummy Payments, please review the gateway settings.', 'woocommerce-gateway-dummy' ) );
 		}
 	}
 
