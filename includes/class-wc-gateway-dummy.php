@@ -147,7 +147,9 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 				'redirect'	=> $this->get_return_url( $order )
 			);
 		} else {
-			$order->update_status( 'failed', __( 'Subscription payment failed. To make a successful payment using Dummy Payments, please review the gateway settings.', 'woocommerce-gateway-dummy' ) );
+			$message = __( 'Order payment failed. To make a successful payment using Dummy Payments, please review the gateway settings.', 'woocommerce-gateway-dummy' );
+			$order->update_status( 'failed', $message );
+			throw new Exception( $message );
 		}
 	}
 
