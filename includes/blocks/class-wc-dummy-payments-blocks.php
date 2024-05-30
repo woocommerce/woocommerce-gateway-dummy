@@ -37,6 +37,9 @@ final class WC_Gateway_Dummy_Blocks_Support extends AbstractPaymentMethodType {
 	 * @return boolean
 	 */
 	public function is_active() {
+		if( is_object( $this->gateway->is_available() ) ){
+			return false;
+		}
 		return $this->gateway->is_available();
 	}
 
