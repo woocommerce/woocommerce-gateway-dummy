@@ -144,7 +144,7 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 					&& WC_Pre_Orders_Order::order_contains_pre_order( $order )
 					&& WC_Pre_Orders_Order::order_will_be_charged_upon_release( $order )
 			) {
-				// Mark order as pre-ordered.
+				// Mark order as tokenized.
 				$order->update_meta_data( '_wc_pre_orders_has_payment_token', '1' );
 				$order->save_meta_data();
 				WC_Pre_Orders_Order::mark_order_as_pre_ordered( $order );
