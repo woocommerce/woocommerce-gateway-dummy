@@ -76,7 +76,6 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 		// Actions.
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
 		add_action( 'woocommerce_scheduled_subscription_payment_dummy', array( $this, 'process_subscription_payment' ), 10, 2 );
-
 		add_action ( 'wc_pre_orders_process_pre_order_completion_payment_' . $this->id, array( $this, 'process_pre_order_release_payment' ), 10 );
 	}
 
@@ -144,7 +143,7 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 					&& WC_Pre_Orders_Order::order_contains_pre_order( $order )
 					&& WC_Pre_Orders_Order::order_will_be_charged_upon_release( $order )
 			) {
-				// Mark order as tokenized.
+				// Mark order as tokenized (no token is saved for the dummy gateway).
 				$order->update_meta_data( '_wc_pre_orders_has_payment_token', '1' );
 				$order->save_meta_data();
 				WC_Pre_Orders_Order::mark_order_as_pre_ordered( $order );
