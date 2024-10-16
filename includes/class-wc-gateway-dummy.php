@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Dummy Gateway.
  *
  * @class    WC_Gateway_Dummy
- * @version  1.0.7
+ * @version  1.10.0
  */
 class WC_Gateway_Dummy extends WC_Payment_Gateway {
 

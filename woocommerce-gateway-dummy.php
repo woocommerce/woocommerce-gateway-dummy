@@ -3,18 +3,18 @@
  * Plugin Name: WooCommerce Dummy Payments Gateway
  * Plugin URI: https://somewherewarm.com/
  * Description: Adds the Dummy Payments gateway to your WooCommerce website.
- * Version: 1.0.9
+ * Version: 1.10.0
  *
- * Author: SomewhereWarm
+ * Author: Woo
  * Author URI: https://somewherewarm.com/
  *
  * Text Domain: woocommerce-gateway-dummy
  * Domain Path: /i18n/languages/
  *
  * Requires at least: 4.2
- * Tested up to: 4.9
+ * Tested up to: 6.6
  *
- * Copyright: © 2009-2023 Emmanouil Psychogyiopoulos.
+ * Copyright: © 2009-2024 Automattic.
  * License: GNU General Public License v3.0
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  */
