@@ -76,6 +76,7 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 		// Actions.
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
 		add_action( 'woocommerce_scheduled_subscription_payment_dummy', array( $this, 'process_subscription_payment' ), 10, 2 );
+		add_action ( 'wc_pre_orders_process_pre_order_completion_payment_' . $this->id, array( $this, 'process_pre_order_release_payment' ), 10 );
 	}
 
 	/**
@@ -136,7 +137,19 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 		$order = wc_get_order( $order_id );
 
 		if ( 'success' === $payment_result ) {
-			$order->payment_complete();
+			// Handle pre-orders charged upon release.
+			if (
+					class_exists( 'WC_Pre_Orders_Order' )
+					&& WC_Pre_Orders_Order::order_contains_pre_order( $order )
+					&& WC_Pre_Orders_Order::order_will_be_charged_upon_release( $order )
+			) {
+				// Mark order as tokenized (no token is saved for the dummy gateway).
+				$order->update_meta_data( '_wc_pre_orders_has_payment_token', '1' );
+				$order->save_meta_data();
+				WC_Pre_Orders_Order::mark_order_as_pre_ordered( $order );
+			} else {
+				$order->payment_complete();
+			}
 
 			// Remove cart
 			WC()->cart->empty_cart();
@@ -167,6 +180,24 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 			$order->payment_complete();
 		} else {
 			$order->update_status( 'failed', __( 'Subscription payment failed. To make a successful payment using Dummy Payments, please review the gateway settings.', 'woocommerce-gateway-dummy' ) );
+		}
+	}
+
+	/**
+	 * Process pre-order payment upon order release.
+	 *
+	 * Processes the payment for pre-orders charged upon release.
+	 *
+	 * @param WC_Order $order The order object.
+	 */
+	public function process_pre_order_release_payment( $order ) {
+		$payment_result = $this->get_option( 'result' );
+
+		if ( 'success' === $payment_result ) {
+			$order->payment_complete();
+		} else {
+			$message = __( 'Order payment failed. To make a successful payment using Dummy Payments, please review the gateway settings.', 'woocommerce-gateway-dummy' );
+			$order->update_status( 'failed', $message );
 		}
 	}
 }
