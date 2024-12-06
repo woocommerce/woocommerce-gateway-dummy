@@ -162,6 +162,27 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 	}
 
 	/**
+	 * Display the payment fields for the shortcode checkout page.
+	 *
+	 * Modifies the payment fields displayed on the checkout page to include
+	 * the any saved payment methods and the option to save a new payment method.
+	 */
+	public function payment_fields() {
+		$description = $this->get_description();
+
+		if ( $description ) {
+			// KSES is ran within get_description, but not here since there may be custom HTML returned by extensions.
+			echo wpautop( wptexturize( $description ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		}
+
+		if ( $this->supports( 'tokenization' ) && is_checkout() ) {
+			$this->tokenization_script();
+			$this->saved_payment_methods();
+			$this->save_payment_method_checkbox();
+		}
+	}
+
+	/**
 	 * Process the payment and return the result.
 	 *
 	 * @param  int  $order_id
