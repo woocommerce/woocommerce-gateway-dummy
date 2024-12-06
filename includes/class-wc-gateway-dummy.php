@@ -45,7 +45,7 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 	 * Constructor for the gateway.
 	 */
 	public function __construct() {
-		
+
 		$this->icon               = apply_filters( 'woocommerce_dummy_gateway_icon', '' );
 		$this->has_fields         = false;
 		$this->supports           = array(
@@ -121,8 +121,44 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 				),
 				'default' => 'success',
 				'desc_tip' => true,
-			)
+			),
+			'tokenization' => array(
+				'title'    => __( 'Enable tokenization', 'woocommerce-gateway-dummy' ),
+				'desc'     => __( 'Allow customers to save payment methods for future use.', 'woocommerce-gateway-dummy' ),
+				'id'       => 'woo_dummy_tokenization',
+				'type'     => 'checkbox',
+				'default'  => 'yes',
+				'desc_tip' => true,
+			),
 		);
+	}
+
+	/**
+	 * Initialize the gateway settings from the form fields.
+	 *
+	 * At present this is used to enable tokenization if the setting is enabled
+	 * in the dashboard.
+	 */
+	public function init_settings() {
+		parent::init_settings();
+
+		// Tokenization settings.
+		if ( 'yes' === $this->get_option( 'tokenization' ) ) {
+			$this->supports[] = 'tokenization';
+		}
+	}
+
+	/**
+	 * Save the payment method to the database.
+	 *
+	 * @return bool Whether the payment method was saved successfully.
+	 */
+	public function add_payment_method() {
+		$token = new WC_Payment_Token_Dummy();
+		$token->set_token( 'dummy-' . $this->get_option( 'result' ) );
+		$token->set_gateway_id( $this->id );
+		$token->set_user_id( get_current_user_id() );
+		return $token->save();
 	}
 
 	/**
@@ -153,6 +189,14 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 
 			// Remove cart
 			WC()->cart->empty_cart();
+
+			// Add payment method for tokenization.
+			if (
+				isset( $_POST['wc-dummy-new-payment-method'] )
+				&& $_POST['wc-dummy-new-payment-method']
+			) {
+				$this->add_payment_method();
+			}
 
 			// Return thankyou redirect
 			return array(

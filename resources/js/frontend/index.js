@@ -12,12 +12,37 @@ const defaultLabel = __(
 );
 
 const label = decodeEntities( settings.title ) || defaultLabel;
+
 /**
  * Content component
  */
 const Content = () => {
 	return decodeEntities( settings.description || '' );
 };
+
+const SavedPaymentContent = ( props ) => {
+	const supportsTokenization = settings.supports.includes( 'tokenization' );
+
+	if ( ! supportsTokenization ) {
+		return null;
+	}
+
+	return (
+		<div style={
+			{
+				border: '1px solid #ccc',
+				borderTop: 'none',
+				padding: '1rem',
+				marginTop: '-16px',
+			}
+		}>
+			<p>
+				<small>{ __( 'For testing tokenization support', 'woocommerce-gateway-dummy' ) }</small>
+			</p>
+		</div>
+	);
+};
+
 /**
  * Label component
  *
@@ -35,11 +60,14 @@ const Dummy = {
 	name: "dummy",
 	label: <Label />,
 	content: <Content />,
+	savedTokenComponent: <SavedPaymentContent />,
 	edit: <Content />,
 	canMakePayment: () => true,
 	ariaLabel: label,
 	supports: {
 		features: settings.supports,
+		showSavedCards: true,
+		showSaveOption: true,
 	},
 };
 
