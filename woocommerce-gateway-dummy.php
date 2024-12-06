@@ -45,6 +45,8 @@ class WC_Dummy_Payments {
 		// Registers WooCommerce Blocks integration.
 		add_action( 'woocommerce_blocks_loaded', array( __CLASS__, 'woocommerce_gateway_dummy_woocommerce_block_support' ) );
 
+		// Prevent errors on My Account.
+		add_filter( 'woocommerce_saved_payment_methods_list', array( __CLASS__, 'saved_payment_methods_list' ), 20 );
 	}
 
 	/**
@@ -72,6 +74,11 @@ class WC_Dummy_Payments {
 	 * Plugin includes.
 	 */
 	public static function includes() {
+
+		// Make the WC_Payment_Token_Dummy class available.
+		if ( class_exists( 'WC_Payment_Token' ) ) {
+			require_once 'includes/class-wc-payment-token-dummy.php';
+		}
 
 		// Make the WC_Gateway_Dummy class available.
 		if ( class_exists( 'WC_Payment_Gateway' ) ) {
@@ -111,6 +118,29 @@ class WC_Dummy_Payments {
 				}
 			);
 		}
+	}
+
+	/**
+	 * Prevent errors on My Account.
+	 *
+	 * The My Account page will throw and error if the payment method does
+	 * not include a brand. This method adds a brand to the Dummy Payment Token.
+	 *
+	 * Runs on `woocommerce_saved_payment_methods_list, 20` filter.
+	 *
+	 * @param array $tokens
+	 * @return array
+	 */
+	public static function saved_payment_methods_list( $tokens ) {
+		if ( empty( $tokens['dummy'] ) ) {
+			return $tokens;
+		}
+
+		foreach ( $tokens['dummy'] as &$token ) {
+			$token['method']['brand'] = __( 'Dummy Payment Token', 'woocommerce-gateway-dummy' );
+		}
+
+		return $tokens;
 	}
 }
 
