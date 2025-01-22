@@ -19,10 +19,6 @@ class WC_Payment_Token_Dummy extends WC_Payment_Token {
 			return false;
 		}
 
-		if ( ! is_user_logged_in() ) {
-			return false;
-		}
-
 		$gateways = WC()->payment_gateways->payment_gateways();
 		if ( ! isset( $gateways[ 'dummy' ] ) ) {
 			return false;
