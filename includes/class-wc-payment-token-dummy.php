@@ -48,10 +48,14 @@ class WC_Payment_Token_Dummy extends WC_Payment_Token {
 	 * @return string Display name.
 	 */
 	public function get_display_name( $deprecated = '' ) {
+		$token_data     = $this->get_data();
+		$payment_result = substr( $token_data['token'], 6 );
+
 		return sprintf(
-			/* translators: %s: Payment token ID */
-			__( 'Dummy Payment Token %s', 'woocommerce-gateway-dummy' ),
-			$this->get_id() ? '#' . $this->get_id() : ''
+			/* translators: 1. Payment token ID, 2. Payment token result */
+			__( 'Dummy Payment Token %s (%s)', 'woocommerce-gateway-dummy' ),
+			$this->get_id() ? '#' . $this->get_id() : '',
+			$payment_result
 		);
 	}
 }
