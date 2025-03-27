@@ -227,8 +227,12 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 
 			// Add payment method for tokenization.
 			if (
-				isset( $_POST['wc-dummy-new-payment-method'] )
-				&& $_POST['wc-dummy-new-payment-method']
+				$this->order_requires_user_payment_method( $order )
+				||
+				(
+					isset( $_POST['wc-dummy-new-payment-method'] )
+					&& $_POST['wc-dummy-new-payment-method']
+				)
 			) {
 				$this->add_payment_method();
 			}
@@ -250,8 +254,12 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 			 * storage for failed results in your own payment gateway.
 			 */
 			if (
-				isset( $_POST['wc-dummy-new-payment-method'] )
-				&& $_POST['wc-dummy-new-payment-method']
+				$this->order_requires_user_payment_method( $order )
+				||
+				(
+					isset( $_POST['wc-dummy-new-payment-method'] )
+					&& $_POST['wc-dummy-new-payment-method']
+				)
 			) {
 				$this->add_payment_method();
 			}
