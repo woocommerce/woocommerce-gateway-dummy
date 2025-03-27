@@ -117,16 +117,19 @@ trait WC_Gateway_Dummy_Forced_Tokenization_Trait {
 			return;
 		}
 
+		/*
+		 * Store payment token.
+		 *
+		 * The payment tokens are stored for both successful and failed purchases.
+		 *
+		 * Doing this for failed purchases is not normal but it is done
+		 * here in the dummy gateway to allow for the storing of tokens
+		 * with a `failure` result.
+		 *
+		 * Please do not use this as example of how to handle token
+		 * storage for failed results in your own payment gateway.
+		 */
 		$token = WC_Checkout_Tokenization::get_order_payment_token( $order );
-
-		if ( $token && isset( $token['gateway'] ) && $this->id === $token['gateway'] ) {
-			// No need to capture the token again (Dummy Gateway tokens are static).
-			return;
-		}
-
-		if ( $this->get_option( 'result' ) !== 'success' ) {
-			return;
-		}
 
 		$token = array(
 			'gateway' => $this->id,

@@ -255,7 +255,8 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 			) {
 				$this->add_payment_method();
 			}
-
+			// As above, this is not normal for a failed payment.
+			$this->maybe_capture_order_token( $order );
 
 			$message = __( 'Order payment failed. To make a successful payment using Dummy Payments, please review the gateway settings.', 'woocommerce-gateway-dummy' );
 			$order->update_status( 'failed', $message );
