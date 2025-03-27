@@ -138,7 +138,37 @@ class WC_Dummy_Payments {
 		}
 
 		foreach ( $tokens['dummy'] as &$token ) {
-			$token['method']['brand'] = __( 'Dummy Payment Token', 'woocommerce-gateway-dummy' );
+			// Use the action delete URL to get the token ID.
+			$result = '';
+			if ( isset( $token['actions']['delete']['url'] ) ) {
+				preg_match( '/delete-payment-method\/([0-9]*)/', $token['actions']['delete']['url'], $matches );
+				if ( isset( $matches[1] ) ) {
+					$token_id = $matches[1];
+					// Cast to an integer in case the regex got some trailing characters.
+					$token_id = (int) $token_id;
+					// Get the token.
+					$payment_token = WC_Payment_Tokens::get( $token_id );
+					if ( $payment_token ) {
+						$token_data = $payment_token->get_data();
+						$result = substr( $token_data['token'], 6 );
+					}
+				}
+			}
+
+			if ( $result ) {
+				$token['method']['brand'] = sprintf(
+					/* translators: 1. Payment token ID, 2. Payment token result */
+					__( 'Dummy Payment Token %s (%s)', 'woocommerce-gateway-dummy' ),
+					"#{$token_id}",
+					$result
+				);
+			} else {
+				$token['method']['brand'] = sprintf(
+					/* translators: 1. Payment token ID */
+					__( 'Dummy Payment Token %s', 'woocommerce-gateway-dummy' ),
+					"#{$token_id}"
+				);
+			}
 		}
 
 		return $tokens;
