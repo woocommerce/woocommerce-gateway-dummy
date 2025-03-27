@@ -195,6 +195,17 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 		$payment_result = $this->get_option( 'result' );
 		$order = wc_get_order( $order_id );
 
+		if ( $this->supports( 'tokenization' ) && isset( $_POST['wc-dummy-payment-token' ] ) ) {
+			// Get the token from the database.
+			$token = WC_Payment_Tokens::get( wc_clean( $_POST['wc-dummy-payment-token'] ) );
+
+			if ( $token->get_user_id() === get_current_user_id() ) {
+				// Use the token result to override the value from the settings.
+				$token_data = $token->get_data();
+				$payment_result = substr( $token_data['token'], 6 );
+			}
+		}
+
 		if ( 'success' === $payment_result ) {
 			// Handle pre-orders charged upon release.
 			if (
