@@ -144,8 +144,8 @@ trait WC_Gateway_Dummy_Forced_Tokenization_Trait {
 			return;
 		}
 
-		// Process the payment.
-		$result = $this->get_option( 'result' );
+		// Get the payment result from the token.
+		$result = substr( $token['token'], 6 );
 
 		if ( 'success' === $result ) {
 			$order->payment_complete();
