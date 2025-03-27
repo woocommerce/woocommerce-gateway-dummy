@@ -19,6 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @version  1.10.0
  */
 class WC_Gateway_Dummy extends WC_Payment_Gateway {
+	use WC_Gateway_Dummy_Forced_Tokenization_Trait;
 
 	/**
 	 * Payment gateway instructions.
@@ -145,6 +146,7 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 		// Tokenization settings.
 		if ( 'yes' === $this->get_option( 'tokenization' ) ) {
 			$this->supports[] = 'tokenization';
+			$this->maybe_init_forced_tokenization();
 		}
 	}
 
@@ -205,6 +207,7 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 				$order->save_meta_data();
 				WC_Pre_Orders_Order::mark_order_as_pre_ordered( $order );
 			} else {
+				$this->maybe_capture_order_token( $order );
 				$order->payment_complete();
 			}
 
