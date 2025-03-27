@@ -112,6 +112,13 @@ trait WC_Gateway_Dummy_Forced_Tokenization_Trait {
 		return $this->is_forced_tokenization_enabled() && WC_Checkout_Tokenization::order_requires_user_payment_method( $order );
 	}
 
+	/**
+	 * Capture an order token if the current order requires it.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param \WC_Order $order
+	 */
 	public function maybe_capture_order_token( $order ) {
 		if ( ! $this->order_requires_order_payment_token( $order ) ) {
 			return;
@@ -140,6 +147,14 @@ trait WC_Gateway_Dummy_Forced_Tokenization_Trait {
 		WC_Checkout_Tokenization::store_token_against_order( $order, $token );
 	}
 
+	/**
+	 * Process the payment for orders with a payment token attached.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param int   $order_id The order ID.
+	 * @param array $token    The token data.
+	 */
 	public function process_order_tokenization_payment( $order_id, $token ) {
 		$order = wc_get_order( $order_id );
 
