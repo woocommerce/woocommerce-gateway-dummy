@@ -82,7 +82,7 @@ class WC_Dummy_Payments {
 
 		// Make the WC_Gateway_Dummy class available.
 		if ( class_exists( 'WC_Payment_Gateway' ) ) {
-			require_once 'includes/trait-wc-gateway-dummy-forced-tokenization.php';
+			require_once 'includes/trait-wc-gateway-dummy-deposits.php';
 			require_once 'includes/class-wc-gateway-dummy.php';
 		}
 	}

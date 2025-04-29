@@ -4,30 +4,30 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Trait for Forced Tokenization compatibility.
+ * Trait for Deposits compatibility.
  *
  * @since x.x.x
  */
-trait WC_Gateway_Dummy_Forced_Tokenization_Trait {
+trait WC_Gateway_Dummy_Deposits_Trait {
 
 	/**
-	 * Flag to indicate that the forced tokenization integration hooks have been attached.
+	 * Flag to indicate that the deposits integration hooks have been attached.
 	 *
 	 * @var bool
 	 */
-	static public $has_attached_forced_tokenization_integration_hooks = false;
+	static public $has_attached_deposits_integration_hooks = false;
 
 	/**
-	 * Initialize pre-orders hook.
+	 * Initialize deposits hook.
 	 *
 	 * @since x.x.x
 	 */
-	public function maybe_init_forced_tokenization() {
-		if ( ! $this->is_forced_tokenization_enabled() ) {
+	public function maybe_init_deposits() {
+		if ( ! $this->is_deposits_enabled() ) {
 			return;
 		}
 
-		$this->supports[] = 'forced-tokenization'; // @phpstan-ignore-line (supports is defined in the classes that use this trait)
+		$this->supports[] = 'deposits'; // @phpstan-ignore-line (supports is defined in the classes that use this trait)
 
 		add_action( 'wc_checkout_tokenization_' . $this->id . '_charge_order_token', [ $this, 'process_order_tokenization_payment' ], 10, 2 ); // @phpstan-ignore-line (id is defined in the classes that use this trait)
 
@@ -35,13 +35,13 @@ trait WC_Gateway_Dummy_Forced_Tokenization_Trait {
 		 * The callbacks attached below only need to be attached once. We don't need each gateway instance to have its own callback.
 		 * Therefore we only attach them once on the main `stripe` gateway and store a flag to indicate that they have been attached.
 		 */
-		if ( self::$has_attached_forced_tokenization_integration_hooks || 'dummy' !== $this->id ) { // @phpstan-ignore-line (id is defined in the classes that use this trait)
+		if ( self::$has_attached_deposits_integration_hooks || 'dummy' !== $this->id ) { // @phpstan-ignore-line (id is defined in the classes that use this trait)
 			return;
 		}
 
 		// add_filter( 'wc_stripe_display_save_payment_method_checkbox', [ $this, 'hide_save_payment_for_forced_tokenization' ] );
 
-		self::$has_attached_forced_tokenization_integration_hooks = true;
+		self::$has_attached_deposits_integration_hooks = true;
 	}
 
 	/**
@@ -51,7 +51,7 @@ trait WC_Gateway_Dummy_Forced_Tokenization_Trait {
 	 *
 	 * @return bool
 	 */
-	public function is_forced_tokenization_enabled() {
+	public function is_deposits_enabled() {
 		return $this->supports( 'tokenization' ) && class_exists( 'WC_Checkout_Tokenization' );
 	}
 
@@ -64,7 +64,7 @@ trait WC_Gateway_Dummy_Forced_Tokenization_Trait {
 	 * @return bool
 	 */
 	public function cart_requires_order_payment_token() {
-		return $this->is_forced_tokenization_enabled() && WC_Checkout_Tokenization::cart_requires_order_payment_token();
+		return $this->is_deposits_enabled() && WC_Checkout_Tokenization::cart_requires_order_payment_token();
 	}
 
 	/**
@@ -81,7 +81,7 @@ trait WC_Gateway_Dummy_Forced_Tokenization_Trait {
 			return false;
 		}
 
-		return $this->is_forced_tokenization_enabled() && WC_Checkout_Tokenization::order_requires_order_payment_token( $order );
+		return $this->is_deposits_enabled() && WC_Checkout_Tokenization::order_requires_order_payment_token( $order );
 	}
 
 	/**
@@ -92,7 +92,7 @@ trait WC_Gateway_Dummy_Forced_Tokenization_Trait {
 	 * @return bool True if the cart requires the user to save a payment method, false otherwise.
 	 */
 	public function cart_requires_user_payment_method() {
-		return $this->is_forced_tokenization_enabled() && WC_Checkout_Tokenization::cart_requires_user_payment_method();
+		return $this->is_deposits_enabled() && WC_Checkout_Tokenization::cart_requires_user_payment_method();
 	}
 
 	/**
@@ -109,7 +109,7 @@ trait WC_Gateway_Dummy_Forced_Tokenization_Trait {
 			return false;
 		}
 
-		return $this->is_forced_tokenization_enabled() && WC_Checkout_Tokenization::order_requires_user_payment_method( $order );
+		return $this->is_deposits_enabled() && WC_Checkout_Tokenization::order_requires_user_payment_method( $order );
 	}
 
 	/**
