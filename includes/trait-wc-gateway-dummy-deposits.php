@@ -29,7 +29,7 @@ trait WC_Gateway_Dummy_Deposits_Trait {
 
 		$this->supports[] = 'deposits'; // @phpstan-ignore-line (supports is defined in the classes that use this trait)
 
-		add_action( 'wc_checkout_tokenization_' . $this->id . '_charge_order_token', [ $this, 'process_order_tokenization_payment' ], 10, 2 ); // @phpstan-ignore-line (id is defined in the classes that use this trait)
+		add_action( 'wc_deposits_' . $this->id . '_charge_order_token', [ $this, 'process_order_tokenization_payment' ], 10, 2 ); // @phpstan-ignore-line (id is defined in the classes that use this trait)
 
 		/**
 		 * The callbacks attached below only need to be attached once. We don't need each gateway instance to have its own callback.
@@ -38,8 +38,6 @@ trait WC_Gateway_Dummy_Deposits_Trait {
 		if ( self::$has_attached_deposits_integration_hooks || 'dummy' !== $this->id ) { // @phpstan-ignore-line (id is defined in the classes that use this trait)
 			return;
 		}
-
-		// add_filter( 'wc_stripe_display_save_payment_method_checkbox', [ $this, 'hide_save_payment_for_forced_tokenization' ] );
 
 		self::$has_attached_deposits_integration_hooks = true;
 	}
@@ -52,64 +50,45 @@ trait WC_Gateway_Dummy_Deposits_Trait {
 	 * @return bool
 	 */
 	public function is_deposits_enabled() {
-		return $this->supports( 'tokenization' ) && class_exists( 'WC_Checkout_Tokenization' );
+		return $this->supports( 'tokenization' ) && function_exists( 'wc_deposits_init' );
 	}
 
 	/**
-	 * Whether the current cart require a payment token stored against the order.
+	 * Whether the current cart contains a deposit.
 	 *
 	 * @since x.x.x
 	 *
 	 * @param  int $order_id
 	 * @return bool
 	 */
-	public function cart_requires_order_payment_token() {
-		return $this->is_deposits_enabled() && WC_Checkout_Tokenization::cart_requires_order_payment_token();
+	public function cart_contains_deposit() {
+		if ( ! $this->is_deposits_enabled() || ! class_exists( 'WC_Deposits_Cart_Manager' ) ) {
+			return false;
+		}
+		$cart_manager = WC_Deposits_Cart_Manager::get_instance();
+		return $cart_manager->has_deposit();
 	}
 
 	/**
-	 * Whether the current order requires a payment token be stored against the order.
+	 * Whether the current order contains a deposit.
 	 *
 	 * @since x.x.x
 	 *
 	 * @param int|\WC_Order $order_id The order ID or order object.
-	 * @return bool True if the order requires a payment token stored against the order, false otherwise.
+	 * @return bool True if the order includes a deposit item, false otherwise.
 	 */
-	public function order_requires_order_payment_token( $order_id ) {
+	public function order_contains_deposit( $order_id ) {
+		if ( ! $this->is_deposits_enabled() || ! class_exists( 'WC_Deposits_Order_Manager' ) ) {
+			return false;
+		}
+
 		$order = wc_get_order( $order_id );
 		if ( ! $order ) {
 			return false;
 		}
 
-		return $this->is_deposits_enabled() && WC_Checkout_Tokenization::order_requires_order_payment_token( $order );
-	}
-
-	/**
-	 * Whether the current cart requires the user to save a payment method.
-	 *
-	 * @since x.x.x
-	 *
-	 * @return bool True if the cart requires the user to save a payment method, false otherwise.
-	 */
-	public function cart_requires_user_payment_method() {
-		return $this->is_deposits_enabled() && WC_Checkout_Tokenization::cart_requires_user_payment_method();
-	}
-
-	/**
-	 * Whether the current order requires the user to save a payment method.
-	 *
-	 * @since x.x.x
-	 *
-	 * @param int|\WC_Order $order_id The order ID or order object.
-	 * @return bool True if the order requires the user to save a payment method, false otherwise.
-	 */
-	public function order_requires_user_payment_method( $order_id ) {
-		$order = wc_get_order( $order_id );
-		if ( ! $order ) {
-			return false;
-		}
-
-		return $this->is_deposits_enabled() && WC_Checkout_Tokenization::order_requires_user_payment_method( $order );
+		$order_manager = WC_Deposits_Order_Manager::get_instance();
+		return $order_manager->has_deposit( $order );
 	}
 
 	/**
@@ -120,7 +99,12 @@ trait WC_Gateway_Dummy_Deposits_Trait {
 	 * @param \WC_Order $order
 	 */
 	public function maybe_capture_order_token( $order ) {
-		if ( ! $this->order_requires_order_payment_token( $order ) ) {
+		$order = wc_get_order( $order );
+		if ( ! $order ) {
+			return;
+		}
+
+		if ( ! $this->order_contains_deposit( $order ) ) {
 			return;
 		}
 
@@ -136,15 +120,14 @@ trait WC_Gateway_Dummy_Deposits_Trait {
 		 * Please do not use this as example of how to handle token
 		 * storage for failed results in your own payment gateway.
 		 */
-		$token = WC_Checkout_Tokenization::get_order_payment_token( $order );
 
 		$token = array(
 			'gateway' => $this->id,
 			'token'   => ( 'dummy-' . $this->get_option( 'result' ) ),
 		);
 
-		// Attach the token to the order.
-		WC_Checkout_Tokenization::store_token_against_order( $order, $token );
+		$order->update_meta_data( '_wc_order_payment_token', $token );
+		$order->save();
 	}
 
 	/**
