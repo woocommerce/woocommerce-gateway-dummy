@@ -43,14 +43,21 @@ trait WC_Gateway_Dummy_Deposits_Trait {
 	}
 
 	/**
-	 * Checks if forced tokenization is supported on this site.
+	 * Checks if the deposits gateway feature is supported on this site.
+	 *
+	 * Deposits is only supported under the following circumstances:
+	 * - The gateway supports tokenization.
+	 * - The wc_deposits_feature_support function exists.
+	 * - `wc_deposits_feature_support( 'deposits_payment_gateway_feature' )` returns true.
 	 *
 	 * @since x.x.x
 	 *
 	 * @return bool
 	 */
 	public function is_deposits_enabled() {
-		return $this->supports( 'tokenization' ) && function_exists( 'wc_deposits_init' );
+		return $this->supports( 'tokenization' )
+			&& function_exists( 'wc_deposits_feature_support' )
+			&& wc_deposits_feature_support( 'deposits_payment_gateway_feature' );
 	}
 
 	/**
