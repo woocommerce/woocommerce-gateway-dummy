@@ -199,10 +199,8 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 			// Get the token from the database.
 			$token = WC_Payment_Tokens::get( wc_clean( $_POST['wc-dummy-payment-token'] ) );
 
-			if ( $token->get_user_id() === get_current_user_id() ) {
-				// Use the token result to override the value from the settings.
-				$token_data = $token->get_data();
-				$payment_result = substr( $token_data['token'], 6 );
+			if ( ! $token || ! $token->validate() ) {
+				$payment_result = 'failure';
 			}
 		}
 

@@ -143,8 +143,8 @@ trait WC_Gateway_Dummy_Deposits_Trait {
 			return;
 		}
 
-		// Get the payment result from the token.
-		$result = substr( $token['token'], 6 );
+		// Get the payment result.
+		$result = $this->get_option( 'result' );
 
 		if ( 'success' === $result ) {
 			$order->payment_complete();
