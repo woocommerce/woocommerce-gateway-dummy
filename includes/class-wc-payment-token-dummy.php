@@ -26,7 +26,7 @@ class WC_Payment_Token_Dummy extends WC_Payment_Token {
 
 		$gateway = $gateways[ 'dummy' ];
 
-		if ( ! $gateway->enabled === 'yes' ) {
+		if ( $gateway->enabled !== 'yes' ) {
 			return false;
 		}
 
