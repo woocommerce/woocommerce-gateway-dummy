@@ -106,6 +106,10 @@ trait WC_Gateway_Dummy_Deposits_Trait {
 	 * @param \WC_Order $order
 	 */
 	public function maybe_capture_order_token( $order ) {
+		if ( $this->get_option( 'result' ) !== 'success' ) {
+			return;
+		}
+
 		$order = wc_get_order( $order );
 		if ( ! $order ) {
 			return;
@@ -114,19 +118,6 @@ trait WC_Gateway_Dummy_Deposits_Trait {
 		if ( ! $this->order_contains_deposit( $order ) ) {
 			return;
 		}
-
-		/*
-		 * Store payment token.
-		 *
-		 * The payment tokens are stored for both successful and failed purchases.
-		 *
-		 * Doing this for failed purchases is not normal but it is done
-		 * here in the dummy gateway to allow for the storing of tokens
-		 * with a `failure` result.
-		 *
-		 * Please do not use this as example of how to handle token
-		 * storage for failed results in your own payment gateway.
-		 */
 
 		$token = array(
 			'gateway' => $this->id,

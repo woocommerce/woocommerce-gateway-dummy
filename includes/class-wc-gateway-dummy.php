@@ -239,25 +239,6 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 				'redirect'	=> $this->get_return_url( $order )
 			);
 		} else {
-			/*
-			 * Add payment method for tokenization.
-			 *
-			 * Doing this for failed purchases is not normal but it is done
-			 * here in the dummy gateway to allow for the storing of tokens
-			 * with a `failure` result.
-			 *
-			 * Please do not use this as example of how to handle token
-			 * storage for failed results in your own payment gateway.
-			 */
-			if (
-				isset( $_POST['wc-dummy-new-payment-method'] )
-				&& $_POST['wc-dummy-new-payment-method']
-			) {
-				$this->add_payment_method();
-			}
-			// As above, this is not normal for a failed payment.
-			$this->maybe_capture_order_token( $order );
-
 			$message = __( 'Order payment failed. To make a successful payment using Dummy Payments, please review the gateway settings.', 'woocommerce-gateway-dummy' );
 			$order->update_status( 'failed', $message );
 			throw new Exception( $message );
