@@ -139,7 +139,8 @@ class WC_Dummy_Payments {
 
 		foreach ( $tokens['dummy'] as &$token ) {
 			// Use the action delete URL to get the token ID.
-			$result = '';
+			$result   = '';
+			$token_id = '';
 			if ( isset( $token['actions']['delete']['url'] ) ) {
 				preg_match( '/delete-payment-method\/([0-9]*)/', $token['actions']['delete']['url'], $matches );
 				if ( isset( $matches[1] ) ) {
