@@ -153,14 +153,32 @@ class WC_Gateway_Dummy extends WC_Payment_Gateway {
 	/**
 	 * Save the payment method to the database.
 	 *
-	 * @return bool Whether the payment method was saved successfully.
+	 * The return value is used by `WC_Form_Handler::add_payment_method_action()`
+	 * when adding a payment method via the My Account > Payment Methods page.
+	 *
+	 * @return array {
+	 *     Outcome of saving the token
+	 *
+	 *     @type string $result   The result of the operation, either 'success' or 'failure'.
+	 *     @type string $redirect The URL to redirect to after the form is submitted.
+	 * }
 	 */
 	public function add_payment_method() {
 		$token = new WC_Payment_Token_Dummy();
 		$token->set_token( 'dummy-' . $this->get_option( 'result' ) );
 		$token->set_gateway_id( $this->id );
 		$token->set_user_id( get_current_user_id() );
-		return $token->save();
+
+		$result = array(
+			'result'   => $this->get_option( 'result' ),
+			'redirect' => wc_get_endpoint_url( 'payment-methods' ),
+		);
+
+		if ( ! $token->save() ) {
+			$result['result'] = 'failure';
+		}
+
+		return $result;
 	}
 
 	/**
