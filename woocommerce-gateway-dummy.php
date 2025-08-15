@@ -5,7 +5,7 @@
  * Description: Adds the Dummy Payments gateway to your WooCommerce website.
  * Version: 1.10.0
  *
- * Author: Woo
+ * Author: WooCommerce
  * Author URI: https://somewherewarm.com/
  *
  * Text Domain: woocommerce-gateway-dummy
