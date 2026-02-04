@@ -5,23 +5,32 @@
 	"author": "WooCommerce",
 	"license": "GPL-3.0+",
 	"keywords": [],
+	"files": [
+		"assets",
+		"bin",
+		"includes",
+		"languages",
+		"woocommerce-gateway-dummy.php"
+	],
 	"engines": {
 		"node": "^20.12.0",
 		"npm": "^10.5.0"
 	},
 	"devDependencies": {
 		"@woocommerce/dependency-extraction-webpack-plugin": "2.2.0",
-		"@wordpress/scripts": "^27.8.0",
+		"@wordpress/scripts": "^31.4.0",
 		"cross-env": "7.0.3"
 	},
 	"scripts": {
 		"start": "wp-scripts start",
 		"build": "wp-scripts build && npm run i18n:build",
+		"build:release": "npm run build && npm run zip",
 		"i18n": "npm run i18n:build",
 		"i18n:build": "npm run i18n:pot && ./bin/build_i18n.sh",
 		"i18n:pot": "php -d xdebug.max_nesting_level=512 $(which wp) i18n make-pot --exclude=\"node_modules/,languages/,assets/\" --headers='{\"Report-Msgid-Bugs-To\":\"https://woocommerce.com/my-account/create-a-ticket/\", \"language-team\":\"LANGUAGE <EMAIL@ADDRESS>\"}' . languages/woocommerce-gateway-dummy.pot",
 		"i18n:json": "$(which wp) i18n make-json languages --no-purge",
 		"packages-update": "wp-scripts packages-update",
-		"check-engines": "wp-scripts check-engines"
+		"check-engines": "wp-scripts check-engines",
+		"zip": "wp-scripts plugin-zip"
 	}
 }

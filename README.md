@@ -10,5 +10,5 @@ To build this project, run:
 nvm use
 npm install
 npm run packages-update
-npm run build
+npm run build:release
 ```
