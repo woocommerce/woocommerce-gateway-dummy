@@ -77,6 +77,11 @@ class WC_Dummy_Payments {
 		if ( class_exists( 'WC_Payment_Gateway' ) ) {
 			require_once 'includes/class-wc-gateway-dummy.php';
 		}
+
+		// Declare the gateway's recurring capability to the Subscriptions Engine.
+		// Isolated to its own file; a no-op until the engine is installed.
+		require_once 'includes/class-wc-gateway-dummy-subscriptions-engine.php';
+		WC_Gateway_Dummy_Subscriptions_Engine::init();
 	}
 
 	/**
