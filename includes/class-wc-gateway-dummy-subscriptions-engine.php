@@ -15,11 +15,10 @@
  * the gateway, and the gateway keeps working unchanged when the engine is not
  * installed.
  *
- * The registry class does not exist yet in this branch; the registration is
- * written against the expected engine API and guarded with `class_exists()` /
- * `method_exists()`, so it is a safe no-op until the registry ships.
- *
- * TODO(WOOSUBS-1723): finalize against the ported CapabilityRegistry once it exists.
+ * The registration is guarded with `class_exists()` / `method_exists()`, so it
+ * is a safe no-op when the Subscriptions Engine is not installed - the gateway
+ * keeps working standalone. When the engine is present, this declares the
+ * `recurring` capability via the engine's public capability registry.
  *
  * @package WooCommerce Dummy Payments Gateway
  * @since   2.1.0
@@ -48,7 +47,7 @@ class WC_Gateway_Dummy_Subscriptions_Engine {
 	 *
 	 * @var string
 	 */
-	const CAPABILITY_REGISTRY = 'Automattic\\WooCommerce\\SubscriptionsEngine\\Gateway\\CapabilityRegistry';
+	const CAPABILITY_REGISTRY = 'Automattic\\WooCommerce\\SubscriptionsEngine\\Integration\\Gateway\\CapabilityRegistry';
 
 	/**
 	 * Capability flag: the gateway can process engine-scheduled recurring charges.
