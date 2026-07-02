@@ -11,11 +11,12 @@
  *
  * The integration lives in its own file, isolated from the gateway's payment
  * classes - it couples to the gateway only by id (`dummy`). Alongside declaring
- * the capability it completes engine-scheduled renewal charges: the Dummy
- * gateway always approves, so it marks the renewal order paid through
- * WooCommerce's own `payment_complete()`. Keeping it isolated means the
- * integration can be removed or rewired without disturbing the gateway, and the
- * gateway keeps working unchanged when the engine is not installed.
+ * the capability it processes engine-scheduled renewal charges, honoring the
+ * gateway's "Payment result" setting: success marks the renewal order paid
+ * through WooCommerce's own `payment_complete()`, failure transitions it to
+ * `failed`. Keeping it isolated means the integration can be removed or rewired
+ * without disturbing the gateway, and the gateway keeps working unchanged when
+ * the engine is not installed.
  *
  * The registration is guarded with `class_exists()` / `method_exists()`, so it
  * is a safe no-op when the Subscriptions Engine is not installed - the gateway
@@ -97,7 +98,7 @@ class WC_Gateway_Dummy_Subscriptions_Engine {
 			self::DECLARE_HOOK_PRIORITY
 		);
 
-		// Complete engine-scheduled renewal charges for the Dummy gateway.
+		// Process engine-scheduled renewal charges for the Dummy gateway.
 		add_action(
 			self::SCHEDULED_PAYMENT_HOOK,
 			array( __CLASS__, 'process_scheduled_payment' ),
@@ -135,14 +136,16 @@ class WC_Gateway_Dummy_Subscriptions_Engine {
 	}
 
 	/**
-	 * Complete an engine-scheduled renewal charge for the Dummy gateway.
+	 * Process an engine-scheduled renewal charge for the Dummy gateway.
 	 *
 	 * The engine hands a renewal off via {@see self::SCHEDULED_PAYMENT_HOOK} and
 	 * expects the gateway to capture against the stored token and transition the
-	 * order. The Dummy gateway always approves, so this marks the renewal order
-	 * paid through WooCommerce's own `payment_complete()` - the same call the
-	 * gateway makes for an initial checkout. A no-op when the order is already
-	 * paid, so an Action Scheduler re-fire cannot double-complete it.
+	 * order. The outcome follows the gateway's "Payment result" setting - the same
+	 * toggle checkout and legacy scheduled payments honor - so renewal failure
+	 * paths can be exercised too: success marks the renewal order paid through
+	 * WooCommerce's own `payment_complete()`, failure transitions it to `failed`.
+	 * A no-op when the order is already paid, so an Action Scheduler re-fire
+	 * cannot double-complete it.
 	 *
 	 * @param float    $amount        Amount the engine asked to charge (the order total is authoritative; unused).
 	 * @param WC_Order $renewal_order The renewal order to charge.
@@ -152,6 +155,32 @@ class WC_Gateway_Dummy_Subscriptions_Engine {
 			return;
 		}
 
-		$renewal_order->payment_complete();
+		if ( 'success' === self::get_payment_result() ) {
+			$renewal_order->payment_complete();
+		} else {
+			$renewal_order->update_status(
+				'failed',
+				__( 'Subscription payment failed. To make a successful payment using Dummy Payments, please review the gateway settings.', 'woocommerce-gateway-dummy' )
+			);
+		}
+	}
+
+	/**
+	 * Read the gateway's configured "Payment result" (`success`/`failure`) setting.
+	 *
+	 * Resolved through the registered gateway instance, looked up by id so this
+	 * integration stays decoupled from the gateway class. Defaults to `success`
+	 * when the gateway is not registered, matching the setting's own default.
+	 *
+	 * @return string `success` or `failure`.
+	 */
+	private static function get_payment_result() {
+		$gateways = WC()->payment_gateways()->payment_gateways();
+
+		if ( ! isset( $gateways['dummy'] ) || ! $gateways['dummy'] instanceof WC_Payment_Gateway ) {
+			return 'success';
+		}
+
+		return $gateways['dummy']->get_option( 'result', 'success' );
 	}
 }
