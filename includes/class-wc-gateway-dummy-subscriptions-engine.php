@@ -52,9 +52,7 @@ class WC_Gateway_Dummy_Subscriptions_Engine {
 
 		add_action(
 			self::SCHEDULED_PAYMENT_HOOK,
-			array( __CLASS__, 'process_scheduled_payment' ),
-			10,
-			2
+			array( __CLASS__, 'process_scheduled_payment' )
 		);
 	}
 
@@ -82,10 +80,9 @@ class WC_Gateway_Dummy_Subscriptions_Engine {
 	 * `payment_complete()`, failure moves it to `failed`. A no-op when the order no
 	 * longer needs payment, so a repeated request cannot double-complete it.
 	 *
-	 * @param float    $amount        Amount requested (the order total is authoritative; unused).
-	 * @param WC_Order $renewal_order The renewal order to charge.
+	 * @param WC_Order $renewal_order The renewal order to charge (its total).
 	 */
-	public static function process_scheduled_payment( $amount, $renewal_order ) {
+	public static function process_scheduled_payment( $renewal_order ) {
 		if ( ! $renewal_order instanceof WC_Order || ! $renewal_order->needs_payment() ) {
 			return;
 		}
